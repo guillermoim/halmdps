@@ -1,9 +1,10 @@
 # @package _global_
 seed: 100
 env_name: Taxi-v0
+n_samples: 1e6
 lrs:
-  decay_step_z: 2000  
-  decay_step_gamma: 2000
+  decay_step_z: 8000  
+  decay_step_gamma: 6000
   decay_factor_z: .99
   decay_factor_gamma: .95
 
