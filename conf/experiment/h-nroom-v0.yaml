@@ -1,0 +1,14 @@
+# @package _global_
+seed: 42
+env_name: NRoom-v0
+lrs:
+  schedule1: 1500  
+  schedule2: 1500
+  schedule3: 1000
+  factor1: .99
+  factor2: .99
+  factor3: .99
+  init_lr1: 1
+  init_lr2: 1
+  init_lr3: 1
+
