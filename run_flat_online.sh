@@ -7,26 +7,26 @@
 
 python online_flat.py +experiment=f-taxi-v0 ++seed=1001
 python online_flat.py +experiment=f-taxi-v0 ++seed=2222
-python online_flat.py +experiment=f-taxi-v0 ++seed=4444
-python online_flat.py +experiment=f-taxi-v0 ++seed=7189
-python online_flat.py +experiment=f-taxi-v0 ++seed=6301
+# python online_flat.py +experiment=f-taxi-v0 ++seed=4444
+# python online_flat.py +experiment=f-taxi-v0 ++seed=7189
+# python online_flat.py +experiment=f-taxi-v0 ++seed=6301
 
-python online_flat.py +experiment=f-taxi-v1 ++seed=1001
-python online_flat.py +experiment=f-taxi-v1 ++seed=2222
-python online_flat.py +experiment=f-taxi-v1 ++seed=4444
-python online_flat.py +experiment=f-taxi-v1 ++seed=7189
-python online_flat.py +experiment=f-taxi-v1 ++seed=7301
+# python online_flat.py +experiment=f-taxi-v1 ++seed=1001
+# python online_flat.py +experiment=f-taxi-v1 ++seed=2222
+# python online_flat.py +experiment=f-taxi-v1 ++seed=9181
+# python online_flat.py +experiment=f-taxi-v1 ++seed=7189
+# python online_flat.py +experiment=f-taxi-v1 ++seed=7301
 
-python online_flat.py +experiment=f-taxi-v2 ++seed=1001
-python online_flat.py +experiment=f-taxi-v2 ++seed=2222
-python online_flat.py +experiment=f-taxi-v2 ++seed=4444
-python online_flat.py +experiment=f-taxi-v2 ++seed=7189
-python online_flat.py +experiment=f-taxi-v2 ++seed=7301
+# python online_flat.py +experiment=f-taxi-v2 ++seed=1001
+# python online_flat.py +experiment=f-taxi-v2 ++seed=2222
+# python online_flat.py +experiment=f-taxi-v2 ++seed=4444
+# python online_flat.py +experiment=f-taxi-v2 ++seed=7189
+# python online_flat.py +experiment=f-taxi-v2 ++seed=7301
 
-python online_flat.py +experiment=f-taxi-v3 ++seed=1001
-python online_flat.py +experiment=f-taxi-v3 ++seed=2222
-python online_flat.py +experiment=f-taxi-v3 ++seed=4444
-python online_flat.py +experiment=f-taxi-v3 ++seed=7189
-python online_flat.py +experiment=f-taxi-v3 ++seed=7301
+# python online_flat.py +experiment=f-taxi-v3 ++seed=1001
+# python online_flat.py +experiment=f-taxi-v3 ++seed=2222
+# python online_flat.py +experiment=f-taxi-v3 ++seed=4444
+# python online_flat.py +experiment=f-taxi-v3 ++seed=7189
+# python online_flat.py +experiment=f-taxi-v3 ++seed=7301
 
 

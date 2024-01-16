@@ -68,6 +68,20 @@ gym.envs.register(
 )
 
 gym.envs.register(
+    id='NRoom-v5',
+    entry_point='envs.NRoomDomainLMDP:NRoomEnvLMDP',
+    max_episode_steps=1000,
+    kwargs={
+             'DIM': 5,
+             'NUM_ROOMS': (8, 8),
+             'GOAL_ROOMS': [(0, 0), (1, 1), (0, 4), (4, 0), (4, 1)],
+             'GOAL_POS_INSIDE_ROOM': (2, 3),
+             'PROBLEM_ID': 'lmdp-nroom-5'
+             },
+)
+
+
+gym.envs.register(
     id='NRoom-v6',
     entry_point='envs.NRoomDomainLMDP:NRoomEnvLMDP',
     max_episode_steps=1000,

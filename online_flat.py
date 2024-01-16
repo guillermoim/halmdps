@@ -93,7 +93,7 @@ def main(cfg: DictConfig) -> None:
     algo = DifferentialExpTDLearning(env, **cfg.lrs)
 
 
-    online(env, int(1e6), algo, 42)
+    online(env, int(cfg.n_samples), algo, 42)
 
     
     wandb.finish()

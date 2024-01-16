@@ -13,8 +13,8 @@ from utils.subtasks import learn_subtasks
 import pickle as pkl
 
 import wandb
+from tqdm import tqdm
 
-# Set initial value of gamma
 
 def get_composed_value(state, env, subtasks, exit_estimates):
     
@@ -32,7 +32,7 @@ def get_composed_value(state, env, subtasks, exit_estimates):
 
         return z[env.abs_states.index(abs_state)]
 
-def algorithm(env, LRS, SAMPLES=1e6):
+def algorithm(env, LRS, SAMPLES=1e5):
 
     # Retrieve optimal solutions
     with open(f"results/ground_truth/{env.unwrapped.spec.id}.pkl", "rb") as fp:
@@ -45,11 +45,12 @@ def algorithm(env, LRS, SAMPLES=1e6):
 
     # Initialize subtasks' value functions
     Zs, _ = learn_subtasks(env.problem_id, 0, env.DIM, 1)
-    Zs[np.where(Zs > 0)] = 1 / len(Zs)
+    Zs[np.where(Zs > 0)] = 1 #/ len(Zs)
 
     # Initialize values value function of the exit states
     exit_states_idxs = list(map(env.states.index, env.exit_states))
     exit_estimates = np.exp(-env.R[exit_states_idxs])
+    exit_estimates[np.where(exit_estimates > 0)] = 1
 
     f_aux = lambda x: get_composed_value(x, env, Zs, exit_estimates)
 
@@ -58,11 +59,11 @@ def algorithm(env, LRS, SAMPLES=1e6):
     # Reset environment
     state, partition, abs_state = env.reset()
 
-    for i in range(int(SAMPLES)):
-        
+    for i in tqdm(range(int(SAMPLES)), disable=False):
+
+
         # Algorithm 2 - Line 4: Sample state according to current estimates
         state_idx = env.states.index(state)
-        
         next_states_idxs = np.where(env.T[state_idx, :] > 0)[0].tolist()
         next_states = [env.states[i] for i in next_states_idxs]
 
@@ -77,9 +78,6 @@ def algorithm(env, LRS, SAMPLES=1e6):
 
         # Algorithm 2 - Line 5: Update subtasks' value functions
         if state not in env.G:
-
-            if state in env.TS:
-                break
 
             abs_ns = env.project_state_in_partition(next_state, partition)
             abs_s_idx, abs_ns_idx = env.abs_states.index(abs_state), env.abs_states.index(abs_ns)
@@ -103,20 +101,28 @@ def algorithm(env, LRS, SAMPLES=1e6):
 
         isw = (1 / len(next_states)) / pi[next_states.index(next_state)]
 
+
         deltaG = (
-            isw * (np.exp(-reward) * next_state_value) / state_value - gamma)
+                isw * (np.exp(-reward) * next_state_value) / state_value - gamma)
+        
+        # if state[0] > 0:
+        #     print(state, state_value)
+        #     print(next_state, next_state_value)
+        #     print(isw, pi[next_states.index(next_state)])
+        #     print(np.exp(-reward))
+        #     print(deltaG)
+
 
         gamma += alpha3 * deltaG
 
         # Algorithm 2 - Lines 7 - 8: If 
         if state in env.exit_states and state != REF_STATE:
             e_idx = env.exit_states.index(state)
-            deltaZ = (get_composed_value(next_state, env, Zs, exit_estimates) - exit_estimates[e_idx])
+            deltaZ = (get_composed_value(state, env, Zs, exit_estimates) - exit_estimates[e_idx])
 
             exit_estimates[e_idx] += alpha1 * deltaZ
 
         state = next_state
-
 
         LRS.update()
 
@@ -124,7 +130,7 @@ def algorithm(env, LRS, SAMPLES=1e6):
 
             ERROR_GAMMA = np.abs(GAMMA_OPT - gamma)
             ERROR_Zs = np.abs(Zs - ZS_OPT).mean()
-            ERROR_Z  = np.mean(Z_OPT[exit_states_idxs] - exit_estimates)
+            ERROR_Z  = np.mean(np.abs(Z_OPT[exit_states_idxs] - exit_estimates))
 
             log_dict = {"train/gamma": gamma,
                         "train/MAE_subtasks": ERROR_Zs,
@@ -146,15 +152,17 @@ def main(cfg: DictConfig) -> None:
         config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
         entity=cfg.wandb.entity, 
         project=cfg.wandb.project,
-        group="halmdps", 
-        tags=["h-online"],)
+        group=f"{cfg.env_name}-hierarchical", 
+        tags=["h-online"],
+        # mode="disabled" 
+    )
 
     env_name = cfg.env_name
     env = gym.make(env_name)
 
     LRS = LearningRateScheduler(**cfg.lrs)
 
-    algorithm(env, LRS)
+    algorithm(env, LRS, int(cfg.n_samples))
 
     wandb.finish()
 

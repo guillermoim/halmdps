@@ -44,7 +44,7 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
         r = args["reward"]
         w = args["isw"]
 
-        deltaZ = (w * (np.exp(-r) * self.z[ns] / self.gamma) - self.z[s])
+        deltaZ = (w * (np.exp(-r) / self.gamma) - self.z[s])
 
         self.z[s] += self.lr_z * deltaZ
 
