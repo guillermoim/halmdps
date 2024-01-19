@@ -1,7 +1,7 @@
 # @package _global_
 seed: 42
 env_name: NRoom-v3
-n_samples: 5e6
+n_samples: 7e6
 lrs:
   decay_step_z: 50000  
   decay_step_gamma: 20000
