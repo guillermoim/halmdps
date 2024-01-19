@@ -1,14 +1,10 @@
 # @package _global_
 seed: 42
 env_name: NRoom-v2
+n_samples: 1000000
 lrs:
-  schedule1: 1500  
-  schedule2: 1500
-  schedule3: 1000
-  factor1: .99
-  factor2: .99
-  factor3: .99
-  init_lr1: 1
-  init_lr2: 1
-  init_lr3: 1
+  decay_step_z: 12000  
+  decay_step_gamma: 10000
+  decay_factor_z: .99
+  decay_factor_gamma: .95
 

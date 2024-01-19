@@ -54,7 +54,9 @@ def algorithm(env, LRS, SAMPLES=1e5):
 
     f_aux = lambda x: get_composed_value(x, env, Zs, exit_estimates)
 
-    gamma = 1
+    gamma = 0 # 0.5
+    avg_reward = 0
+    gamma = np.exp(avg_reward)
 
     # Reset environment
     state, partition, abs_state = env.reset()
@@ -113,7 +115,11 @@ def algorithm(env, LRS, SAMPLES=1e5):
         #     print(deltaG)
 
 
-        gamma += alpha3 * deltaG
+        # gamma += alpha3 * deltaG
+
+        avg_reward = avg_reward + (((-reward + np.log(isw) )- avg_reward )/ (i+1))
+        gamma = np.exp(avg_reward)
+        print(reward, gamma, GAMMA_OPT)
 
         # Algorithm 2 - Lines 7 - 8: If 
         if state in env.exit_states and state != REF_STATE:
@@ -154,7 +160,7 @@ def main(cfg: DictConfig) -> None:
         project=cfg.wandb.project,
         group=f"{cfg.env_name}-hierarchical", 
         tags=["h-online"],
-        # mode="disabled" 
+        mode="disabled" 
     )
 
     env_name = cfg.env_name

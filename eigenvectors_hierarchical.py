@@ -117,18 +117,18 @@ if __name__ == "__main__":
 
     env = gym.make(env_id)
 
-    _, _, true_gain = solve_flat(env)
+    z, true_gamma, zs = solve_flat(env)
 
     gammas, lows, highs, means = solve_hierarchical(env, low_level_iters)
 
-    errors = np.abs(gammas - true_gain)
+    errors = np.abs(gammas - true_gamma)
 
     fig, ax = plt.subplots(1,1, figsize=(9, 6))
     ax.set_title(fr'Eigenvectors - {env.problem_id} - MAE={errors[-1]:.6f}')
     ax.plot(lows, linewidth=1.5, color='red', label='low')
     ax.plot(highs, linewidth=1.5, color='blue', label='highs')
     ax.plot(gammas, linewidth=1.5, color='black', label=fr'$\Gamma$s')
-    ax.axhline(true_gain, linewidth=1.5, color='green', linestyle="dashed", label=fr'True $\Gamma$')
+    ax.axhline(true_gamma, linewidth=1.5, color='green', linestyle="dashed", label=fr'True $\Gamma$')
     ax.plot(errors, linewidth=1.5, color='pink', linestyle="dotted", label=fr'MAE$')
     ax.legend(fontsize=18, loc=1)
 

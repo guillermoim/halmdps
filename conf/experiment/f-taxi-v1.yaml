@@ -3,8 +3,8 @@ seed: 100
 env_name: Taxi-v1
 n_samples: 5e6
 lrs:
-  decay_step_z: 20000  
-  decay_step_gamma: 12000
+  decay_step_z: 35000  
+  decay_step_gamma: 15000
   decay_factor_z: .99
   decay_factor_gamma: .95
 

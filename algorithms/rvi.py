@@ -45,16 +45,18 @@ def solve(env, iters=10000, log=False):
     
     rsidx = env.states.index(env.G[0])
 
+
     z /= z[rsidx]
+    zeig /= zeig[rsidx]
 
     if log:
         print('Gain RVI:', gain, "Gamma RVI:", np.exp(gain))
         print('Max eigenvalue:', gammaeig, "log(eig):", np.log(gammaeig))
         print('Error gamma', np.abs(np.exp(gain) - gammaeig))
         print('Error gain', np.abs(gain - np.log(gammaeig)))
-        print('Error in z', np.abs(z - zeig / zeig[rsidx]).mean())
+        print('Error in z', np.abs(z - zeig).mean())
         print('Error in v', np.abs(
-            np.log(z[:len(IS)]) - np.log(zeig[:len(IS)] / zeig[rsidx])).mean())
+            np.log(z[:len(IS)]) - np.log(zeig[:len(IS)])).mean())
 
 
     zs, _ = learn_subtasks(env.problem_id, np.log(gamma), env.DIM, 10000)
