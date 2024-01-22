@@ -117,15 +117,14 @@ def algorithm(env, LRS, SAMPLES=1e5):
 
         # gamma += alpha3 * deltaG
 
-        avg_reward = avg_reward + (((-reward + np.log(isw) )- avg_reward )/ (i+1))
-        gamma = np.exp(avg_reward)
-        print(reward, gamma, GAMMA_OPT)
+        avg_reward = (0.6) * avg_reward + (0.4) * (reward - avg_reward/ (i+1))
+        gamma = np.exp(-avg_reward)
+        print(gamma)
 
         # Algorithm 2 - Lines 7 - 8: If 
         if state in env.exit_states and state != REF_STATE:
             e_idx = env.exit_states.index(state)
             deltaZ = (get_composed_value(state, env, Zs, exit_estimates) - exit_estimates[e_idx])
-
             exit_estimates[e_idx] += alpha1 * deltaZ
 
         state = next_state
