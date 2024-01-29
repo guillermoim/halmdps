@@ -20,13 +20,15 @@ def online(env, SAMPLES, algo, seed):
 
     with open(f"results/ground_truth/{env.unwrapped.spec.id}.pkl", "rb") as fp:
 
-       Z_OPT, GAMMA_OPT, ZS_OPT =  pkl.load(fp)
+       Z_OPT, GAMMA_OPT, _ =  pkl.load(fp)
 
     REF_STATE = env.G[0]
 
     np.random.seed = seed
 
     # Set the value function of the terminal states equal to the reward
+
+    N = 50000
 
     (state, _, _) = env.reset()
 
@@ -36,7 +38,7 @@ def online(env, SAMPLES, algo, seed):
         # Get the current state and next states' values.
         next_states_idxs = np.where(env.T[env.states.index(state), :] > 0)[0].tolist()
         # next_states = list(map(lambda x: env.states[x], next_states))
-        next_states_values = algo.get_exp_values(next_states_idxs)
+        next_states_values = algo.z[next_states_idxs]
 
         pi = next_states_values / np.sum(next_states_values)
 
@@ -58,18 +60,18 @@ def online(env, SAMPLES, algo, seed):
 
         state = next_state
 
-        if i % 100 == 0:
+        if i % 1000 == 0:
 
             log_dict = {"train/gamma": algo.gamma,
                         "train/MAE_z": np.abs(Z_OPT - algo.z).mean(),
                         "train/Error_Gamma": np.abs(GAMMA_OPT - algo.gamma),
                         "train/gt_gamma": GAMMA_OPT,
-                        "learning_rates/z": algo.lr_z,
+                        "learning_rates/z": algo.lr_vf,
                         "learning_rates/gamma":  algo.lr_g,
-                        "step": i}
+                        "step": i,}
             
             wandb.log(log_dict)
-
+    
     return algo.z
 
 
@@ -90,12 +92,12 @@ def main(cfg: DictConfig) -> None:
     env = gym.make(env_name)
 
 
-    algo = DifferentialExpTDLearning(env, **cfg.lrs)
+    algo = hydra.utils.call(config=cfg.algorithm, env=env)
 
+    # algo = DifferentialExpTDLearning(env, **cfg.lrs)
 
     online(env, int(cfg.n_samples), algo, 42)
 
-    
     wandb.finish()
 
 

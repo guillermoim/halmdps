@@ -12,11 +12,10 @@ if __name__ == "__main__":
     env_name = args.env_name
 
 
-
     with open(f"results/ground_truth/{env_name}.pkl", "rb") as fp:
         
         Z, gamma, zs = pkl.load(fp)
 
 
         print(gamma)
-        print(np.where(Z==1))
+        print(Z.shape)

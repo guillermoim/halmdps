@@ -117,7 +117,7 @@ def algorithm(env, LRS, SAMPLES=1e5):
 
         # gamma += alpha3 * deltaG
 
-        avg_reward = (0.6) * avg_reward + (0.4) * (reward - avg_reward/ (i+1))
+        avg_reward += (reward - avg_reward/ (i+1))
         gamma = np.exp(-avg_reward)
         print(gamma)
 

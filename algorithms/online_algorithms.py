@@ -1,26 +1,26 @@
 from collections import defaultdict
 import numpy as np
-
+from collections import deque
 
 class AbstractAlgorithm:
 
     def __init__(self, 
                  env,
                  decay_step_gamma: int,
-                 decay_step_z: int,
+                 decay_step_vf: int,
                  decay_factor_gamma: float,
-                 decay_factor_z: float,
-                 init_lr_z: int = 1,
+                 decay_factor_vf: float,
+                 init_lr_vf: int = 1,
                  init_lr_g: int = 1):
 
         self.env = env
         self.samples = 0
-        self.lr_z = init_lr_z
+        self.lr_vf = init_lr_vf
         self.lr_g = init_lr_g
         self.decay_step_gamma = decay_step_gamma
-        self.decay_step_z = decay_step_z      
+        self.decay_step_vf = decay_step_vf    
         self.decay_factor_gamma = decay_factor_gamma
-        self.decay_factor_z = decay_factor_z
+        self.decay_factor_vf = decay_factor_vf
 
     def update(self, **args):
         raise NotImplementedError
@@ -36,6 +36,8 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
 
         self.z = np.exp(-env.R)
         self.z[np.where(self.z > 0)] = 1
+        self.N = 50000
+        self.rewards = deque(maxlen=50000)
 
 
     def update_z(self, **args):
@@ -46,10 +48,10 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
 
         deltaZ = (w * (np.exp(-r) * self.z[ns] / self.gamma) - self.z[s])
 
-        self.z[s] += self.lr_z * deltaZ
+        self.z[s] += self.lr_vf * deltaZ
 
-        if self.samples % self.decay_step_z == 0:
-            self.lr_z *= self.decay_factor_z
+        if self.samples % self.decay_step_vf == 0:
+            self.lr_vf *= self.decay_factor_vf
         
     def update_gamma(self, **args):
         s = self.env.states.index(args["state"])
@@ -59,6 +61,7 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
 
         deltaG = (w * (np.exp(-r) * self.z[ns] / self.z[s]) - self.gamma)
         self.gamma += self.mu * self.lr_g * deltaG
+
         if self.samples % self.decay_step_gamma == 0:
             self.lr_g *= self.decay_factor_gamma
 
@@ -72,51 +75,59 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
         return np.log(self.gamma)
 
 
-# class DifferentialTDLearning(AbstractAlgorithm):
+class DifferentialLogTDLearning(AbstractAlgorithm):
 
-#     def __init__(self, decay_step, init_lr_vf=1, init_lr_g=1, mu=1, tau=1):
-#         super().__init__(decay_step=decay_step)
-#         self.mu = mu
-#         self.vf = defaultdict(lambda: 1)
-#         self.gamma = 1
-#         self.tau = 1
+    def __init__(self, env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z, mu=1, tau=1):
+        super().__init__(env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z)
+        self.mu = mu
+        self.tau = 1
 
-#     def set_vf_terminal_states(self, states, rewards):
-#         for i, state in enumerate(states):
-#             self.vf[state] = np.exp(rewards[i])
+        self.rho = 0
+        self.vf = -env.R
+        self.vf[np.where(np.exp(self.vf) > 0)] = 0
 
-#     def update(self, **args):
-#         s = args["state"]
-#         nss = args["next_states"]
-#         ns = args["next_state"]
-#         r = args["reward"]
 
-#         sum_exp_values = np.mean(
-#             [self.vf[ns] for ns in nss])
+    def update_z(self, **args):
+        s = self.env.states.index(args["state"])
+        ns = self.env.states.index(args["next_state"])
+        r = args["reward"]
+        w = args["isw"]
 
-#         delta = -r - np.log(self.gamma) + \
-#             np.log(sum_exp_values) - np.log(self.vf[s])
 
-#         self.vf[s] *= np.exp(self.lr_vf * delta)
-#         self.gamma *= np.exp(self.mu * self.lr_g * delta)
+        delta = (-r - self.rho - w + self.vf[ns] - self.vf[s])
+        self.vf[s] += self.lr_vf * delta
 
-#         self.samples += 1
+        if self.samples % self.decay_step_vf== 0:
+            self.lr_vf *= self.decay_factor_vf
 
-#         if self.samples % self.decay_step == 0:
-#             self.lr_vf *= self.decay_factor_vf
-#             self.lr_g *= self.decay_factor_gamma
+    def update_gamma(self, **args):
+        
+        s = self.env.states.index(args["state"])
+        ns = self.env.states.index(args["next_state"])
+        r = args["reward"]
+        w = args["isw"]
 
-#     def get_exp_values(self, list_of_states):
+        delta = (-r - self.rho - w + self.vf[ns] - self.vf[s])
+        self.rho += self.lr_g * delta
 
-#         return [self.vf[ns] for ns in list_of_states]
+        if self.samples % self.decay_step_gamma == 0:
+            self.lr_g *= self.decay_factor_gamma
 
-#     def get_gain(self):
+    def get_exp_values(self, list_of_states):
 
-#         try:
-#             return np.log(self.gamma)
-#         except:
-#             print('Gamma', self.gamma)
-#             exit()
+        return [np.exp(self.vf[ns]) for ns in list_of_states]
+
+    def get_gain(self):
+        return self.rho
+    
+    @property
+    def gamma(self):
+        return np.exp(self.rho)
+    
+    @property
+    def z(self):
+
+        return np.exp(self.vf)
 
 
 if __name__ == "__main__":
