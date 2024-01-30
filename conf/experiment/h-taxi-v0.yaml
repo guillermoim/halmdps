@@ -1,7 +1,17 @@
 # @package _global_
+defaults:
+  - override /algorithm: td-exp
+
+algorithm:
+  decay_step_z: 20000  
+  decay_step_gamma: 15000
+  decay_factor_z: .99
+  decay_factor_gamma: .95
+
+
 seed: 42
 env_name: Taxi-v0
-n_samples: 1000000
+n_samples: 100000
 lrs:
   schedule1: 1500  
   schedule2: 1500

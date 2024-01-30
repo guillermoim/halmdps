@@ -54,15 +54,14 @@ def algorithm(env, LRS, SAMPLES=1e5):
 
     f_aux = lambda x: get_composed_value(x, env, Zs, exit_estimates)
 
-    gamma = 0 # 0.5
-    avg_reward = 0
-    gamma = np.exp(avg_reward)
+    gamma = 0.5
+    # avg_reward = 0
+    # gamma = np.exp(avg_reward)
 
     # Reset environment
     state, partition, abs_state = env.reset()
 
     for i in tqdm(range(int(SAMPLES)), disable=False):
-
 
         # Algorithm 2 - Line 4: Sample state according to current estimates
         state_idx = env.states.index(state)
@@ -94,7 +93,7 @@ def algorithm(env, LRS, SAMPLES=1e5):
                 (target - Zs[:, env.abs_states.index(abs_state)])
             
         
-        # (aux) make the transition in the LMDP
+        # (AUXILIARY) make the transition in the LMDP
         (_, partition, abs_state), reward, _, _ = env.step(next_state)
 
         # Algorithm 2 - Line 6: Update estimated gamma 
@@ -107,19 +106,7 @@ def algorithm(env, LRS, SAMPLES=1e5):
         deltaG = (
                 isw * (np.exp(-reward) * next_state_value) / state_value - gamma)
         
-        # if state[0] > 0:
-        #     print(state, state_value)
-        #     print(next_state, next_state_value)
-        #     print(isw, pi[next_states.index(next_state)])
-        #     print(np.exp(-reward))
-        #     print(deltaG)
-
-
-        # gamma += alpha3 * deltaG
-
-        avg_reward += (reward - avg_reward/ (i+1))
-        gamma = np.exp(-avg_reward)
-        print(gamma)
+        gamma += alpha3 * deltaG
 
         # Algorithm 2 - Lines 7 - 8: If 
         if state in env.exit_states and state != REF_STATE:
@@ -159,7 +146,7 @@ def main(cfg: DictConfig) -> None:
         project=cfg.wandb.project,
         group=f"{cfg.env_name}-hierarchical", 
         tags=["h-online"],
-        mode="disabled" 
+        # mode="disabled" 
     )
 
     env_name = cfg.env_name

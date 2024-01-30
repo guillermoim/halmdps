@@ -31,7 +31,7 @@ class DifferentialExpTDLearning(AbstractAlgorithm):
     def __init__(self, env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z, mu=1, tau=1):
         super().__init__(env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z)
         self.mu = mu
-        self.gamma = 0.5
+        self.gamma = 1
         self.tau = 1
 
         self.z = np.exp(-env.R)

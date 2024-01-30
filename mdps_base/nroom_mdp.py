@@ -77,8 +77,8 @@ def create_flat_mdp(NUM_ROOMS: tuple,
     terminal_states = list(graph.nodes())[N:]
     goal_states = [states[i] for i in goals_indices]
 
-    P[goals_indices, :] = 0
-    P[goals_indices, 0] = 1
+    P[goals_indices, N:] = 0
+    P[goals_indices, :N] = 1 / N
 
     # Build reward function
     R = np.full(len(states), INTERIOR_REWARD, dtype=np.float16)
