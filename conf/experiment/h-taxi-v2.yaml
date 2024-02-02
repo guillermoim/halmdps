@@ -11,6 +11,7 @@ algorithm:
 
 seed: 42
 env_name: Taxi-v2
+n_samples: 5000000
 lrs:
   schedule1: 2500  
   schedule2: 2500

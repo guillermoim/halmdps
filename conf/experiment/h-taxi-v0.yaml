@@ -8,7 +8,6 @@ algorithm:
   decay_factor_z: .99
   decay_factor_gamma: .95
 
-
 seed: 42
 env_name: Taxi-v0
 n_samples: 100000

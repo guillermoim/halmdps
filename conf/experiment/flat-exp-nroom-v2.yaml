@@ -9,6 +9,6 @@ algorithm:
   decay_factor_gamma: .95
 
 seed: 42
-env_name: NRoom-v3
+env_name: NRoom-v2
 n_samples: 10e6
 

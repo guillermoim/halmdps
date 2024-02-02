@@ -1,4 +1,4 @@
-_target_: algorithms.online_algorithms.DifferentialLogTDLearning
+_target_: algorithms.flat_online_algorithms.DifferentialLogTDLearning
 decay_step_z: 12000  
 decay_step_gamma: 10000
 decay_factor_z: .99

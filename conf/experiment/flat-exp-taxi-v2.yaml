@@ -9,6 +9,6 @@ algorithm:
   decay_factor_gamma: .95
 
 seed: 42
-env_name: Taxi-v1
-n_samples: 12e6
+env_name: Taxi-v2
+n_samples: 20e6
 

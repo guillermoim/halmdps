@@ -1,6 +1,6 @@
 
 from mdps_base.problem_loader import *
-from algorithms.online_algorithms import *
+from algorithms.flat_online_algorithms import *
 import pickle as pkl
 import numpy as np
 import pickle as pkl
@@ -16,19 +16,17 @@ from omegaconf import DictConfig, OmegaConf
 import wandb
 
 
-def online(env, SAMPLES, algo, seed):
+def online(env, SAMPLES, algo, eta, seed):
 
-    with open(f"results/ground_truth/{env.unwrapped.spec.id}.pkl", "rb") as fp:
+    with open(f"results/ground_truth/{env.unwrapped.spec.id}_{eta:.4f}.pkl", "rb") as fp:
 
-       Z_OPT, GAMMA_OPT, _ =  pkl.load(fp)
+       Z_OPT, GAMMA_OPT, _, eta =  pkl.load(fp)
 
     REF_STATE = env.G[0]
 
     np.random.seed = seed
 
     # Set the value function of the terminal states equal to the reward
-
-    N = 50000
 
     (state, _, _) = env.reset()
 
@@ -50,13 +48,7 @@ def online(env, SAMPLES, algo, seed):
 
         isw = (1 / len(next_states_idxs)) / pi[action]
 
-        algo.update_gamma(state=state, next_state=next_state, reward=reward, isw=isw)
-
-        if state != REF_STATE:
-
-            algo.update_z(
-                state=state, next_state=next_state, reward=reward, isw=isw)
-
+        algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=state != REF_STATE)
 
         state = next_state
 
@@ -77,12 +69,14 @@ def online(env, SAMPLES, algo, seed):
 
 @hydra.main(version_base=None, config_path="conf", config_name="default")
 def main(cfg: DictConfig) -> None:
-    
+
+    t = "log" if 'Log' in cfg.algorithm["_target_"] else "exp"
+
     run = wandb.init(
         config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
         entity=cfg.wandb.entity, 
         project=cfg.wandb.project,
-        group=f"{cfg.env_name}-flat", 
+        group=f"{cfg.env_name}-{t}-flat", 
         tags=["f-online"],
         # mode="disabled"
         )
@@ -90,13 +84,13 @@ def main(cfg: DictConfig) -> None:
 
     env_name = cfg.env_name
     env = gym.make(env_name)
-
+    eta = cfg.algorithm["eta"]
 
     algo = hydra.utils.call(config=cfg.algorithm, env=env)
 
     # algo = DifferentialExpTDLearning(env, **cfg.lrs)
 
-    online(env, int(cfg.n_samples), algo, 42)
+    online(env, int(cfg.n_samples), algo, eta, 42)
 
     wandb.finish()
 

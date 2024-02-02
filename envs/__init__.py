@@ -10,7 +10,7 @@ gym.envs.register(
              'NUM_ROOMS': (2, 1),
              'DIM': 3,
              'GOAL_POS_INSIDE_ROOM': (1,1),
-             'GOAL_ROOMS': [(0, 0), (1, 0)],
+             'GOAL_ROOMS': [(0, 0)],
              'PROBLEM_ID': 'lmdp-nroom-mini'
              },
 )

@@ -1,4 +1,4 @@
-_target_: algorithms.online_algorithms.DifferentialExpTDLearning
+_target_: algorithms.flat_online_algorithms.DifferentialExpTDLearning
 decay_step_z: ???  
 decay_step_gamma: ???  
 decay_factor_z: ???  
