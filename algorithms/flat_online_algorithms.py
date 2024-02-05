@@ -100,10 +100,9 @@ class DifferentialLogTDLearning(AbstractAlgorithm):
     def update(self, **args):
         s = self.env.states.index(args["state"])
         r = args["reward"]
-        w = args["isw"]
         update_vf = args["update_vf"]
 
-        delta = (-r + (- self.rho + np.log(np.dot(self.env.T[s], self.z)) - self.vf[s]) / self.eta)
+        delta = (-r + ( -self.rho + np.log(np.dot(self.env.T[s], self.z)) - self.vf[s]) / self.eta)
         self.rho += self.lr_g * delta
 
         if update_vf:
