@@ -57,16 +57,15 @@ def online(env, eta, algo, SAMPLES=1e5):
 
         algo.update_lrs()
 
+
         # Log into wandb
         if i % 200 == 0:
             
-            # print(algo.gamma)
-
             ERROR_GAMMA = np.abs(GAMMA_OPT - algo.gamma)
             ERROR_Zs = np.abs(algo.subtasks - ZS_OPT).mean()
             ERROR_Z  = np.mean(np.abs(Z_OPT[algo.exit_states_idxs] - algo.exit_estimates))
 
-            print(ERROR_GAMMA, ERROR_Zs, ERROR_Z)
+            # print(ERROR_GAMMA, ERROR_Zs, ERROR_Z)
 
             log_dict = {"train/gamma": algo.gamma,
                         "train/MAE_subtasks": ERROR_Zs,
@@ -83,14 +82,17 @@ def online(env, eta, algo, SAMPLES=1e5):
 
 @hydra.main(version_base=None, config_path="conf", config_name="default")
 def main(cfg: DictConfig) -> None:
+
+
+    t = "log" if 'Log' in cfg.algorithm["_target_"] else "exp"
     
     run = wandb.init(
         config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
         entity=cfg.wandb.entity, 
         project=cfg.wandb.project,
-        group=f"{cfg.env_name}-hierarchical", 
+        group=f"{cfg.env_name}-{t}-hierarchical", 
         tags=["h-online"],
-        mode="disabled" 
+        # mode="disabled" 
     )
 
     env_name = cfg.env_name

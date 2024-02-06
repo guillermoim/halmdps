@@ -1,14 +1,14 @@
 # @package _global_
 
 defaults:
-  - override /algorithm: hierarchical-log
+  - override /algorithm: hierarchical-exp
 
 algorithm:
   eta: 1
 
 
 seed: 42
-env_name: NRoom-v0
+env_name: Taxi-v0
 n_samples: 100000
 lrs:
   schedule1: 1500  

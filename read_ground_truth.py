@@ -19,5 +19,6 @@ if __name__ == "__main__":
         Z, gamma, zs, _ = pkl.load(fp)
 
 
-        print(gamma)
+        print(gamma, np.log(gamma))
         print(Z.shape)
+        print(zs)

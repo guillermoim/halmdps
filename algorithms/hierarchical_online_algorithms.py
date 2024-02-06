@@ -6,6 +6,7 @@ sys.path.append("..")
 from utils.subtasks import learn_subtasks
 from abc import ABC
 
+
 class HierarchicalAlgorithm(ABC):
 
     def __init__(self, env, lrs, eta):
@@ -58,11 +59,13 @@ class HierarchicalAlgorithm(ABC):
         if update:
             
             abs_s_idx = self.env.abs_states.index(abs_state)
-            r = -self.env.abs_R[:, abs_s_idx] - self.rho
+            r = - self.env.abs_R[:, abs_s_idx] - self.rho
 
             next_abs_idxs = np.where(self.env.abs_T[abs_s_idx, :])[0].tolist()
+
+
             target = np.exp(r) * np.nanmean(self.subtasks[:, next_abs_idxs], axis=1)
-            
+
             self.subtasks[:, self.env.abs_states.index(abs_state)] += self.lrs.lr2 * \
                 (target - self.subtasks[:, self.env.abs_states.index(abs_state)])
         
@@ -143,7 +146,7 @@ class HierarchicalLog(HierarchicalAlgorithm):
 
         super().__init__(env, lrs, eta)
 
-        self.rho = np.log(0.3468270998021556)
+        self.rho = 0
 
         self.exit_estimates_vf = HierarchicalLog._prepare_exit_estimates(env)
 
@@ -167,26 +170,26 @@ class HierarchicalLog(HierarchicalAlgorithm):
         
         state = args["state"]
         r = args["reward"]
-        w = args["isw"]
-        next_state = args["next_state"]
         update_vf = args["update_vf"]
 
         # TODO: Review this
 
         next_states_idxs = np.where(self.env.T[self.env.states.index(state), :] > 0)[0].tolist()
-
         next_states_values = [self.get_composed_value(self.env.states[ns]) for ns in next_states_idxs]
+
+        state_value = np.log(self.get_composed_value(state))
 
         # print(state, next_state, next_states_values)
 
         delta = (-r + (- self.rho + np.log(np.dot(self.env.T[self.env.states.index(state), next_states_idxs], next_states_values)) \
-                       - self.get_composed_value(state)) / self.eta)
+                       - state_value) / self.eta)
         
         self.rho += self.lrs.lr3 * delta
 
         if state in self.env.exit_states and update_vf:
 
             e_idx = self.env.exit_states.index(state)
+            # FIXME: Here
             deltaZ = np.log(self.get_composed_value(state)) - self.exit_estimates_vf[e_idx]
             self.exit_estimates_vf[e_idx] += self.lrs.lr1 * deltaZ
 
@@ -216,7 +219,7 @@ class HierarchicalLog(HierarchicalAlgorithm):
     def _prepare_exit_estimates(env):
         exit_states_idxs = list(map(env.states.index, env.exit_states))
         exit_estimates = -env.R[exit_states_idxs]
-        exit_estimates[np.where(np.exp(exit_estimates) > 0)] = -1
+        exit_estimates[np.where(np.exp(exit_estimates) > 0)] = 0
         return exit_estimates
     
     @property
