@@ -7,6 +7,7 @@ algorithm:
   decay_step_gamma: 15000
   decay_factor_z: .99
   decay_factor_gamma: .95
+  eta: 1
 
 seed: 42
 env_name: NRoom-v3
