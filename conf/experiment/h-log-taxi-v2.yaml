@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - override /algorithm: hierarchical-log
+
+algorithm:
+  eta: 1
+
+
+seed: 42
+env_name: Taxi-v2
+n_samples: 1000000
+lrs:
+  schedule1: 2500  
+  schedule2: 5000
+  schedule3: 500
+  factor1: .99
+  factor2: .99
+  factor3: .99
+  init_lr1: 1
+  init_lr2: 1
+  init_lr3: 1
+

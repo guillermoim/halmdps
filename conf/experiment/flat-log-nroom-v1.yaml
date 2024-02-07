@@ -1,0 +1,14 @@
+# @package _global_
+defaults:
+  - override /algorithm: td-log
+
+algorithm:
+  decay_step_z: 35000  
+  decay_step_gamma: 15000
+  decay_factor_z: .99
+  decay_factor_gamma: .95
+
+seed: 42
+env_name: NRoom-v1
+n_samples: 10e6
+

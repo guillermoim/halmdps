@@ -1,0 +1,23 @@
+# @package _global_
+
+defaults:
+  - override /algorithm: hierarchical-exp
+
+algorithm:
+  eta: 1
+
+
+seed: 42
+env_name: NRoom-v3
+n_samples: 500000
+lrs:
+  schedule1: 1500  
+  schedule2: 1500
+  schedule3: 1000
+  factor1: .99
+  factor2: .99
+  factor3: .99
+  init_lr1: 1
+  init_lr2: 1
+  init_lr3: 1
+
