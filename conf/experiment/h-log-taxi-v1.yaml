@@ -1,7 +1,15 @@
 # @package _global_
+
+defaults:
+  - override /algorithm: hierarchical-log
+
+algorithm:
+  eta: 1
+
+
 seed: 42
-env_name: NRoom-v3
-n_samples: 5000000
+env_name: Taxi-v1
+n_samples: 100000
 lrs:
   schedule1: 1500  
   schedule2: 1500
