@@ -3,8 +3,8 @@ defaults:
   - override /algorithm: td-exp
 
 algorithm:
-  decay_step_z: 35000  
-  decay_step_gamma: 15000
+  decay_step_z: 45000  
+  decay_step_gamma: 25000
   decay_factor_z: .99
   decay_factor_gamma: .95
   eta: 1

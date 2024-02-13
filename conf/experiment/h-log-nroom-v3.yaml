@@ -9,11 +9,11 @@ algorithm:
 
 seed: 42
 env_name: NRoom-v3
-n_samples: 500000
+n_samples: 1e6
 lrs:
-  schedule1: 1500  
-  schedule2: 1500
-  schedule3: 1000
+  schedule1: 3000  
+  schedule2: 2500
+  schedule3: 1800
   factor1: .99
   factor2: .99
   factor3: .99
