@@ -1,6 +1,6 @@
 # @package _global_
 defaults:
-  - override /algorithm: td-exp
+  - override /algorithm: td-log
 
 algorithm:
   decay_step_z: 45000  
