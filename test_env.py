@@ -53,7 +53,11 @@ if __name__ == "__main__":
 
         next_state = env.states[next_states_idxs[action]]
 
-        (next_state, _, _), reward, _, _ = env.step(next_state)
+        (next_state, _, _), reward, done, _ = env.step(next_state)
+
+        if done:
+            print(done, next_state in env.G)
+
         algo.samples+=1
 
         isw = (1 / len(next_states_idxs)) / pi[action]
@@ -61,8 +65,8 @@ if __name__ == "__main__":
         algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=state != REF_STATE)
         
         if i % 10000 == 0:
-            pass
             print(np.abs(Z_OPT - algo.z).mean())
+            print(Z_OPT.argmax(), Z_OPT.max(), algo.z.argmax(), algo.z.max())
             # print(GAMMA_OPT, algo.gamma)
             # print(np.abs(np.log(Z_OPT[:len(env.IS)])/eta - np.log(algo.z[:len(env.IS)])/eta).mean())
             # print(algo.lr_g, algo.lr_vf)

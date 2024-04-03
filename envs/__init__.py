@@ -31,7 +31,7 @@ gym.envs.register(
 gym.envs.register(
     id='NRoom-v2',
     entry_point='envs.NRoomDomainLMDP:NRoomEnvLMDP',
-    max_episode_steps=1000,
+    max_episode_steps=100000,
     kwargs={
              'DIM': 3,
              'NUM_ROOMS': (5, 5),
@@ -44,7 +44,7 @@ gym.envs.register(
 gym.envs.register(
     id='NRoom-v3',
     entry_point='envs.NRoomDomainLMDP:NRoomEnvLMDP',
-    max_episode_steps=1000,
+    # max_episode_steps=100000,
     kwargs={
              'DIM': 5,
              'NUM_ROOMS': (8, 8),
