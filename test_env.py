@@ -27,15 +27,15 @@ if __name__ == "__main__":
 
     algo = DifferentialLogTDLearning(env, decay_factor_gamma=.95, 
                                         decay_factor_z=.99,
-                                        decay_step_gamma=5000,
-                                        decay_step_z=10000,
+                                        decay_step_gamma=80000,
+                                        decay_step_z=45000,
                                         eta = eta
                                         )
     
 
     (state, _, _) = env.reset()
     
-    for i in range((int(1e6))):
+    for i in range((int(5e6))):
 
         # Get the current state and next states' values.
         next_states_idxs = np.where(env.T[env.states.index(state), :] > 0)[0].tolist()
@@ -47,30 +47,21 @@ if __name__ == "__main__":
         try:
             action = np.random.choice(len(next_states_idxs), p=pi)
         except:
-            print(state, [env.states[i] for i in next_states_idxs])
-            print(next_states_values)
             exit()
 
         next_state = env.states[next_states_idxs[action]]
 
         (next_state, _, _), reward, done, _ = env.step(next_state)
 
-        if done:
-            print(done, next_state in env.G)
-
         algo.samples+=1
 
         isw = (1 / len(next_states_idxs)) / pi[action]
 
-        algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=state != REF_STATE)
+        algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=not state in env.G)
         
         if i % 10000 == 0:
-            print(np.abs(Z_OPT - algo.z).mean())
-            print(Z_OPT.argmax(), Z_OPT.max(), algo.z.argmax(), algo.z.max())
-            # print(GAMMA_OPT, algo.gamma)
-            # print(np.abs(np.log(Z_OPT[:len(env.IS)])/eta - np.log(algo.z[:len(env.IS)])/eta).mean())
-            # print(algo.lr_g, algo.lr_vf)
-            # print()
+            ridx = env.states.index(REF_STATE)
+            print(np.abs(Z_OPT - algo.z).mean(), algo.gamma, GAMMA_OPT)
 
         state = next_state
 

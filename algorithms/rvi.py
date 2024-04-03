@@ -26,7 +26,7 @@ def power_method(P, G, n_iter=1000):
     return z
 
 
-def solve(env, eta=1, iters=10000, log=False):
+def solve(env, eta=1, iters=5000, log=False):
  
     IS, TS, _, P, R = env.get_LMDP()
 
