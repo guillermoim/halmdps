@@ -14,6 +14,7 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 import wandb
+import pandas as pd
 
 
 def online(env, SAMPLES, algo, eta, seed):
@@ -63,6 +64,16 @@ def online(env, SAMPLES, algo, eta, seed):
                         "step": i,}
             
             wandb.log(log_dict)
+    
+    df = pd.DataFrame({"z":algo.z, "z_opt": Z_OPT})
+    table = wandb.Table(dataframe=df)
+
+    print(df)
+
+    artifact = wandb.Artifact("value_functions", type="model")
+    artifact.add(table, "value_functions_table")
+
+    wandb.log_artifact(artifact)
     
     return algo.z
 

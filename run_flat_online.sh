@@ -65,9 +65,8 @@
 # NRoom-v3
 python online_flat.py +experiment=flat-log-nroom-v3 ++seed=2222
 python online_flat.py +experiment=flat-log-nroom-v3 ++seed=5739
-python online_flat.py +experiment=flat-log-nroom-v3 ++seed=8101
+# python online_flat.py +experiment=flat-log-nroom-v3 ++seed=8101
 
-# python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=1001
-# python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=2222
-# python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=5739
+python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=2222
+python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=5739
 # python online_flat.py +experiment=flat-exp-nroom-v3 ++seed=8101
