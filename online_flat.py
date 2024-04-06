@@ -49,7 +49,7 @@ def online(env, SAMPLES, algo, eta, seed):
 
         isw = (1 / len(next_states_idxs)) / pi[action]
 
-        algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=state != REF_STATE)
+        algo.update(state=state, next_state=next_state, reward=reward, isw=isw, update_vf=not state in env.G)
 
         state = next_state
 
@@ -67,8 +67,6 @@ def online(env, SAMPLES, algo, eta, seed):
     
     df = pd.DataFrame({"z":algo.z, "z_opt": Z_OPT})
     table = wandb.Table(dataframe=df)
-
-    print(df)
 
     artifact = wandb.Artifact("value_functions", type="model")
     artifact.add(table, "value_functions_table")

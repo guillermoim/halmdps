@@ -1,15 +1,9 @@
-# @package _global_
-
-defaults:
-  - override /algorithm: hierarchical-exp
-
 algorithm:
+  _target_: algorithms.hierarchical_online_algorithms.HierarchicalExp
   eta: 1
 
-
 seed: 42
-env_name: NRoom-v3
-n_samples: 1e6
+
 lrs:
   schedule1: 3000  
   schedule2: 2500

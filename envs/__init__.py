@@ -55,6 +55,19 @@ gym.envs.register(
 )
 
 gym.envs.register(
+    id='NRoom-v4',
+    entry_point='envs.NRoomDomainLMDP:NRoomEnvLMDP',
+    # max_episode_steps=100000,
+    kwargs={
+             'DIM': 5,
+             'NUM_ROOMS': (8, 8),
+             'GOAL_ROOMS': [(0, 0), (7, 7), (3, 3), (4, 4)],
+             'GOAL_POS_INSIDE_ROOM': (2, 3),
+             'PROBLEM_ID': 'lmdp-nroom-4'
+             },
+)
+
+gym.envs.register(
     id='Taxi-v0',
     entry_point='envs.TaxiDomainLMDP:TaxiEnvLMDP',
     max_episode_steps=1000,
