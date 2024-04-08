@@ -79,7 +79,12 @@ def online(env, SAMPLES, algo, eta, seed):
 @hydra.main(version_base=None, config_path="conf", config_name="default")
 def main(cfg: DictConfig) -> None:
 
-    t = "log" if 'Log' in cfg.algorithm["_target_"] else "exp"
+    if 'Log' in cfg.algorithm["_target_"]:
+        t = "log"  
+    elif "ExpTD" in cfg.algorithm["_target_"]: 
+        t = "exp-td"
+    else:
+        t = "exp"
 
     run = wandb.init(
         config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
