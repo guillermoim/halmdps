@@ -69,12 +69,18 @@ def solve_hierarchical(env, low_level_iters):
 
     gammas, lows, highs, means = [], [], [], []
 
+    n_iter = 0
+
     while np.abs(hi - lo) > EPS:
+
+        n_iter+=1
 
         gamma = (lo + hi) / 2
 
         # Algorithm 1: Line 5 - Solve the substasks for the current estimation of gamma
         zs, ABS_STATES = learn_subtasks(env.problem_id, np.log(gamma), env.DIM, low_level_iters)
+
+        print(n_iter, lo, hi, gamma)
 
         # Algorithm 1: Line 6 - Construct matrix
         Ge, Ze, REF_STATE_idx = _setup_problem(env, zs, ABS_STATES, REF_STATE)
