@@ -91,3 +91,11 @@ gym.envs.register(
     kwargs={
              'DIM': 10,
              'PROBLEM_ID': 'lmdp-taxi-10'})
+
+gym.envs.register(
+    id='Taxi-v3',
+    entry_point='envs.TaxiDomainLMDP:TaxiEnvLMDP',
+    max_episode_steps=1000,
+    kwargs={
+             'DIM': 8,
+             'PROBLEM_ID': 'lmdp-taxi-8'})
