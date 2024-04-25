@@ -26,7 +26,7 @@ class AbstractAlgorithm:
         raise NotImplementedError
 
 
-class DifferentialExpTDLearning(AbstractAlgorithm):
+class DifferentialZLearning(AbstractAlgorithm):
 
     def __init__(self, env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z, eta=1, mu=1, fixed_gamma=False):
         super().__init__(env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z)
@@ -135,3 +135,54 @@ if __name__ == "__main__":
     algorithm = AbstractAlgorithm()
     algorithm.update()
 
+
+class DifferentialExpTDLearning(AbstractAlgorithm):
+
+    def __init__(self, env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z, mu=1, tau=1, eta=1):
+        super().__init__(env, decay_step_gamma, decay_step_z, decay_factor_gamma, decay_factor_z)
+        self.mu = mu
+        self.tau = 1
+
+        self.eta = eta
+
+        self.gamma = 1
+        self.z = np.exp(-env.R)
+        self.z[np.where(self.z > 0)] = 1
+
+    def update(self, **args):
+        s = self.env.states.index(args["state"])
+        r = args["reward"]
+        update_vf = args["update_vf"]
+
+        delta = (-r + ( -self.rho + np.log(np.dot(self.env.T[s], self.z)) - self.vf[s]) / self.eta)
+        self.gamma *= np.exp(self.eta * delta) ** self.lr_g
+
+        if update_vf:
+            self.z[s] *= np.exp(self.eta * delta) ** self.lr_vf
+
+        if self.samples % self.decay_step_vf== 0:
+            self.lr_vf *= self.decay_factor_vf
+
+        if self.samples % self.decay_step_gamma == 0:
+            self.lr_g *= self.decay_factor_gamma
+
+    def get_exp_values(self, list_of_states):
+
+        return [np.exp(self.vf[ns]) for ns in list_of_states]
+
+    def get_gain(self):
+        return self.rho
+    
+    @property
+    def rho(self):
+        return (1 / self.eta) * np.log(self.gamma)
+    
+    @property
+    def vf(self):
+        return (1/self.eta) * np.log(self.z)
+
+
+if __name__ == "__main__":
+
+    algorithm = AbstractAlgorithm()
+    algorithm.update()

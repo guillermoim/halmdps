@@ -1,4 +1,4 @@
-_target_: algorithms.flat_online_algorithms.DifferentialZLearning
+_target_: algorithms.flat_online_algorithms.DifferentialExpTDLearning
 decay_step_z: 80000  
 decay_step_gamma: 55000
 decay_factor_z: .99

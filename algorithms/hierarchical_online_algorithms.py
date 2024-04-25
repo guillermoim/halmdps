@@ -173,7 +173,6 @@ class HierarchicalLog(HierarchicalAlgorithm):
         update_vf = args["update_vf"]
 
         # TODO: Review this
-
         next_states_idxs = np.where(self.env.T[self.env.states.index(state), :] > 0)[0].tolist()
         next_states_values = [self.get_composed_value(self.env.states[ns]) for ns in next_states_idxs]
 
