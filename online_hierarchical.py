@@ -83,8 +83,10 @@ def online(env, eta, algo, SAMPLES=1e5):
 @hydra.main(version_base=None, config_path="conf", config_name="default")
 def main(cfg: DictConfig) -> None:
 
+    exp = cfg.experiment 
 
-    t = "log" if 'Log' in cfg.algorithm["_target_"] else "exp"
+
+    t = "log" if 'Log' in exp.algorithm["_target_"] else "exp"
     
     run = wandb.init(
         config=OmegaConf.to_container(cfg, resolve=True, throw_on_missing=True),
@@ -98,11 +100,11 @@ def main(cfg: DictConfig) -> None:
     env_name = cfg.env_name
     env = gym.make(env_name)
 
-    LRS = LearningRateScheduler(**cfg.lrs)
+    LRS = LearningRateScheduler(**exp.lrs)
     
-    algo = hydra.utils.call(config=cfg.algorithm, env=env, lrs=LRS)
+    algo = hydra.utils.call(config=exp.algorithm, env=env, lrs=LRS)
 
-    online(env, cfg.algorithm["eta"], algo, int(cfg.n_samples))
+    online(env, exp.algorithm["eta"], algo, int(cfg.n_samples))
 
     wandb.finish()
 

@@ -1,5 +1,5 @@
 algorithm:
-  _target_: algorithms.hierarchical_online_algorithms.HierarchicalExp
+  _target_: algorithms.hierarchical_online_algorithms.HierarchicalLog
   eta: 1
 
 seed: 42
