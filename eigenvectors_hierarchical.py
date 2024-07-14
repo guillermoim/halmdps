@@ -71,7 +71,11 @@ def solve_hierarchical(env, low_level_iters):
 
     n_iter = 0
 
+    global ITERATIONS
+    ITERATIONS = 0
+
     while np.abs(hi - lo) > EPS:
+        ITERATIONS+=1
 
         n_iter+=1
 
@@ -79,8 +83,6 @@ def solve_hierarchical(env, low_level_iters):
 
         # Algorithm 1: Line 5 - Solve the substasks for the current estimation of gamma
         zs, ABS_STATES = learn_subtasks(env.problem_id, np.log(gamma), env.DIM, low_level_iters)
-
-        print(n_iter, lo, hi, gamma)
 
         # Algorithm 1: Line 6 - Construct matrix
         Ge, Ze, REF_STATE_idx = _setup_problem(env, zs, ABS_STATES, REF_STATE)
@@ -123,19 +125,25 @@ if __name__ == "__main__":
 
     env = gym.make(env_id)
 
-    z, true_gamma, zs = solve_flat(env)
+    z, true_gamma, zs, gammas_flat = solve_flat(env)
 
     gammas, lows, highs, means = solve_hierarchical(env, low_level_iters)
 
-    errors = np.abs(gammas - true_gamma)
+    errors_h = np.abs(gammas - true_gamma)
+    errors_flat = np.abs(gammas_flat - true_gamma)
 
     fig, ax = plt.subplots(1,1, figsize=(9, 6))
-    ax.set_title(fr'Eigenvectors - {env.problem_id} - MAE={errors[-1]:.6f}')
-    ax.plot(lows, linewidth=1.5, color='red', label='low')
-    ax.plot(highs, linewidth=1.5, color='blue', label='highs')
-    ax.plot(gammas, linewidth=1.5, color='black', label=fr'$\Gamma$s')
-    ax.axhline(true_gamma, linewidth=1.5, color='green', linestyle="dashed", label=fr'True $\Gamma$')
-    ax.plot(errors, linewidth=1.5, color='pink', linestyle="dotted", label=fr'MAE$')
+    ax.set_title(fr'{env.problem_description}, $\varepsilon$={EPS:.2E}, Final $MAE$={errors_h[-1]:.2E}', fontsize=16)
+    ax.set_xlim((0, ITERATIONS-10))
+    ax.axhline(true_gamma, linewidth=2, color='green', linestyle="dashed", label=fr'True $\Gamma$')
+    ax.plot(lows, linewidth=2, color='red', label='low')
+    ax.plot(highs, linewidth=2, color='blue', label='high')
+    ax.plot(gammas, linewidth=2, color='black', label=fr'$\Gamma_i$')
+   
+    # ax.plot(errors_h, linewidth=1.5, color='pink', linestyle="dotted", label=fr'$MAE_H$')
+    # ax.plot(gammas_flat[:30], linewidth=1.5, color='limegreen', label=fr'$MAE_F$')
+
+    ax.set_xlabel("iteration", fontsize=20)
     ax.legend(fontsize=18, loc=1)
 
     plt.savefig(f'results/hierarchical/eigenvectors/{env.problem_id}.pdf', bbox_inches='tight', dpi=500)

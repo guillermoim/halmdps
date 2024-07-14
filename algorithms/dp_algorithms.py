@@ -10,7 +10,7 @@ def __init__():
     pass
 
 
-def exp_rvi(S: list, P: np.ndarray, R: np.ndarray, eta=1, iters: int = 1000):
+def exp_rvi(S: list, P: np.ndarray, R: np.ndarray, eta=1, iters: int = 1000, with_gains = False):
     """
         Run Relative Value Iteration in the exponentiated space.
 
@@ -20,15 +20,19 @@ def exp_rvi(S: list, P: np.ndarray, R: np.ndarray, eta=1, iters: int = 1000):
     # TODO: Add temperature parameter
     z = np.ones(len(S))
     G = np.diagflat(np.exp(- eta* R))
+    gammas = []
 
     for _ in tqdm(range(iters)):
 
-        ref_value = z[0]
         z = G @ P @ z
-        z, gain = z / z[0], ref_value / z[0]
+        gamma = z[0]
+        z = z / z[0]
+        gammas.append(gamma)
 
-    return z, -np.log(gain)
-
+    if with_gains:
+        return z, gamma, np.asarray(gammas)
+    else:
+        return z, gamma
 
 def rvi(S: list, P: np.ndarray, R: np.ndarray, iters: int = 10000):
 

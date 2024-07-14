@@ -31,19 +31,19 @@ def solve(env, eta=1, iters=5000, log=False):
     IS, TS, _, P, R = env.get_LMDP()
 
     # Run RVI
-    z, gain = exp_rvi(IS + TS, P, R, eta=eta, iters=iters)
+    z, gamma, gammas = exp_rvi(IS + TS, P, R, eta=eta, iters=iters, with_gains=True)
 
     # Get eigenvectors
     w, v = np.linalg.eig(np.diag(np.exp(-eta * R)) @ P)
     gammaeig = np.max(w)
     zeig = v[:, np.argmax(w)]
-
-    gamma = np.exp(gain)
     
     rsidx = env.states.index(env.G[0])
 
     z /= z[rsidx]
     zeig /= zeig[rsidx]
+
+    gain = -np.log(gamma)
 
     if log:
         print('Gain RVI:', gain, "Gamma RVI:", np.exp(gain))
@@ -57,7 +57,7 @@ def solve(env, eta=1, iters=5000, log=False):
 
     zs, _ = learn_subtasks(env.problem_id, np.log(gamma), env.DIM, 10000)
 
-    return z, gamma, zs
+    return z, gamma, zs, gammas
 
 
 if __name__ == "__main__":

@@ -31,6 +31,9 @@ class TaxiEnvLMDP(gym.Env):
 
         self.partitions = get_exit_states(self.DIM, self.TS)
         self.problem_id = PROBLEM_ID
+        
+        self.problem_description = f"Taxi {DIM}x{DIM}"
+
 
     def reset(self):
         restart_state = ((0, 0), (0, self.DIM - 1), (self.DIM - 1, 0))

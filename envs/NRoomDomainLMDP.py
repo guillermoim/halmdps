@@ -27,6 +27,7 @@ class NRoomEnvLMDP(gym.Env):
         self.abs_states = self.abs_S + self.abs_TS
 
         self.problem_id = PROBLEM_ID
+        self.problem_description = f"NRoom {NUM_ROOMS[0]}x{NUM_ROOMS[1]} rooms of {DIM}x{DIM}"
 
         self.current_state = None
         self.current_abstract_state = None
