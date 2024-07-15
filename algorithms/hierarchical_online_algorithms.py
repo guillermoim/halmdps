@@ -9,11 +9,12 @@ from abc import ABC
 
 class HierarchicalAlgorithm(ABC):
 
-    def __init__(self, env, lrs, eta):
+    def __init__(self, env, lrs, k, eta):
 
         self.env = env 
         self.lrs = lrs 
         self.eta = eta
+        self.k = k
 
         self.subtasks = HierarchicalAlgorithm._prepare_subtasks(env)
 
@@ -90,12 +91,11 @@ class HierarchicalAlgorithm(ABC):
 class HierarchicalExp(HierarchicalAlgorithm):
 
 
-    def __init__(self, env, lrs, eta=1):
+    def __init__(self, env, lrs, k, eta=1):
 
-        super().__init__(env, lrs, eta)
+        super().__init__(env, lrs, k, eta)
 
         self.gamma = 0.5
-
         self.exit_estimates = HierarchicalExp._prepare_exit_estimates(env)
     
     
@@ -120,7 +120,7 @@ class HierarchicalExp(HierarchicalAlgorithm):
 
             e_idx = self.env.exit_states.index(state)
             deltaZ = (self.get_composed_value(state) - self.exit_estimates[e_idx])
-            self.exit_estimates[e_idx] += self.lrs.lr1 * deltaZ
+            self.exit_estimates[e_idx] += self.k * self.lrs.lr1 * deltaZ
 
 
     @staticmethod
@@ -142,9 +142,9 @@ class HierarchicalExp(HierarchicalAlgorithm):
 class HierarchicalLog(HierarchicalAlgorithm):
 
 
-    def __init__(self, env, lrs, eta=1):
+    def __init__(self, env, lrs, k, eta=1):
 
-        super().__init__(env, lrs, eta)
+        super().__init__(env, lrs, k, eta)
 
         self.rho = 0
 
@@ -190,7 +190,7 @@ class HierarchicalLog(HierarchicalAlgorithm):
             e_idx = self.env.exit_states.index(state)
             # FIXME: Here
             deltaZ = np.log(self.get_composed_value(state)) - self.exit_estimates_vf[e_idx]
-            self.exit_estimates_vf[e_idx] += self.lrs.lr1 * deltaZ
+            self.exit_estimates_vf[e_idx] += self.k * self.lrs.lr1 * deltaZ
 
 
     def get_composed_value(self, state):

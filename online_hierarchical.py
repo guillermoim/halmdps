@@ -85,6 +85,10 @@ def main(cfg: DictConfig) -> None:
 
     exp = cfg.experiment 
 
+    k = cfg.k 
+
+    print(k)
+
 
     t = "log" if 'Log' in exp.algorithm["_target_"] else "exp"
     
@@ -102,7 +106,7 @@ def main(cfg: DictConfig) -> None:
 
     LRS = LearningRateScheduler(**exp.lrs)
     
-    algo = hydra.utils.call(config=exp.algorithm, env=env, lrs=LRS)
+    algo = hydra.utils.call(config=exp.algorithm, env=env, lrs=LRS, k=k)
 
     online(env, exp.algorithm["eta"], algo, int(cfg.n_samples))
 
