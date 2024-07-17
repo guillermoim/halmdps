@@ -1,0 +1,19 @@
+algorithm:
+  _target_: algorithms.hierarchical_online_algorithms.HierarchicalExp
+  eta: 1
+
+seed: 42
+
+lrs:
+  schedule1: 8000  
+  schedule2: 3000
+  schedule3: 4000
+  factor1: .99
+  factor2: .99
+  factor3: .99
+  init_lr1: 1
+  init_lr2: 1
+  init_lr3: 1
+
+
+
