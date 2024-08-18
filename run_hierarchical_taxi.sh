@@ -1,10 +1,10 @@
 # Taxi-v1
 
-python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=1001
-python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=2222
-python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=9181
-python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=7189
-python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=7301
+# python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=1001
+# python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=2222
+# python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=9181
+# python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=7189
+# python online_hierarchical.py +experiment=h-log-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=7301
 
 # python online_hierarchical.py +experiment=h-exp-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=1001 k=1e-1 
 # python online_hierarchical.py +experiment=h-exp-short ++env_name=Taxi-v1 ++n_samples=1e6 ++seed=2222 k=1e-1
